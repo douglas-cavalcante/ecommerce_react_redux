@@ -1,8 +1,7 @@
 import React, { useCallback } from 'react';
 import { IProduct } from '../store/modules/cart/types';
 import { useDispatch, useSelector } from 'react-redux';
-import { addProductToCartRequest } from '../store/modules/cart/actions';
-import { IState } from '../store';
+import { creators, selectors } from '../store/modules';
 
 interface CatalogItemProps {
   product: IProduct;
@@ -11,11 +10,12 @@ interface CatalogItemProps {
 const CatalogItem: React.FC<CatalogItemProps> = ({ product }) => {
   const dispatch = useDispatch();
 
-  const hasFailedStockCheck = useSelector<IState, boolean>(state => {
-    return state.cart.failedStockCheck.includes(product.id);
-  })
+  const hasFailedStockCheck = useSelector(selectors.cart.getFailedStockCheck).includes(product.id);
+
+ const testeSelector = useSelector(selectors.cart.testSelector);
+  
   const handleAddProductToCart = useCallback(() => {
-    dispatch(addProductToCartRequest(product))
+    dispatch(creators.cart.addProductToCartRequest(product))
   }, [dispatch, product]);
 
 
@@ -26,7 +26,7 @@ const CatalogItem: React.FC<CatalogItemProps> = ({ product }) => {
       <button type="button" onClick={handleAddProductToCart}>Comprar</button>
 
       {hasFailedStockCheck && <span>Em falta</span>}
-    
+
     </article >
   )
 }
